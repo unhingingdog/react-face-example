@@ -14,7 +14,7 @@ class Spinner extends Component {
       setTimeout(() => {
         this.setState({
           deg: this.state.deg + this.state.acc,
-          acc: ((50 - this.props.x) * -1) / 100
+          acc: ((50 - this.props.x) * -1) / 500
         })
       }, 100)
     })
