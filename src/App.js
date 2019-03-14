@@ -9,6 +9,10 @@ class Spinner extends Component {
     acc: 0
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !!nextProps.x
+  }
+
   componentDidUpdate() {
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -33,8 +37,9 @@ class Spinner extends Component {
             `,
             transition: 'transform 0.1s linear'
           }}
-          
         />
+        <h2>Move your face to spin.</h2>
+        <h3>Face at {this.props.x}.</h3>
       </div>
     )
   }
