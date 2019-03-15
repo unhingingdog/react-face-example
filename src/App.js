@@ -1,63 +1,66 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import FaceDetector from 'react-face'
 
-class Spinner extends Component {
-  state = { 
-    deg: 0,
-    acc: 0
-  }
+const Spinner = ({ x, strength, frequency }) => {
+  const [spinnerState, setSpinnerState] = useState({
+    degrees: 0,
+    velocity: 0,
+    acceleration: 0
+  })
 
-  shouldComponentUpdate(nextProps) {
-    return !!nextProps.x
-  }
+  const { degrees, velocity, acceleration } = spinnerState
 
-  componentDidUpdate() {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        this.setState({
-          deg: this.state.deg + this.state.acc,
-          acc: ((50 - this.props.x) * -1) / 500
+  const decelerating = velocity < 0 ?
+      (velocity + acceleration) > velocity :
+      (velocity + acceleration) < velocity
+
+  useEffect(() => {
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        setSpinnerState({
+          acceleration: strength > 100 ? 
+            (((50 - x) * -1) / 100) : acceleration,
+          velocity: velocity + (acceleration * (decelerating ? 25 : 1)),
+          degrees: degrees + velocity
         })
-      }, 100)
-    })
-  }
+      })
+    }, frequency)
+  }, [spinnerState])
 
-  render() {
-    return(
-      <div>
-        <img 
-          src={logo} 
-          className="App-logo" 
-          alt="logo" 
-          style={{
-            transform: `
-              rotate(${this.state.deg}deg) 
-            `,
-            transition: 'transform 0.1s linear'
-          }}
-        />
-        <h2>Move your face to spin.</h2>
-        <h3>Face at {this.props.x}.</h3>
-      </div>
-    )
-  }
+  return(
+    <div>
+      <img 
+        src={logo} 
+        className="App-logo" 
+        alt="logo" 
+        style={{
+          transform: `
+            rotate(${spinnerState.degrees}deg) 
+          `,
+          transition: `transform ${frequency / 1000}s linear`
+        }}
+      />
+      <h2>Move your face to spin.</h2>
+    </div>
+  )
 }
 
-class App extends Component {
-
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">  
-          <FaceDetector>
-            {data => <Spinner x={data[0].x} />}
-          </FaceDetector>
-        </header>
-      </div>
-    );
-  }
+const App = () => {
+  return (
+    <div className="App">
+      <header className="App-header">  
+        <FaceDetector>
+          {data => <Spinner 
+            x={data[0].x} 
+            strength={data[0].strength}
+            frequency={50}
+          />}
+        </FaceDetector>
+      </header>
+    </div>
+  )
 }
 
 export default App;
