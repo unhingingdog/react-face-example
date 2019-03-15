@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import FaceDetector from 'react-face'
 
-const Spinner = ({ x, strength, frequency }) => {
+const Spinner = ({ x, strength, frequency, detectorActive }) => {
   const [spinnerState, setSpinnerState] = useState({
     degrees: 0,
     velocity: 0,
@@ -22,7 +22,8 @@ const Spinner = ({ x, strength, frequency }) => {
         setSpinnerState({
           acceleration: strength > 100 ? 
             (((50 - x) * -1) / 100) : acceleration,
-          velocity: velocity + (acceleration * (decelerating ? 25 : 1)),
+          velocity: detectorActive ? 
+            velocity + (acceleration * (decelerating ? 25 : 1)) : velocity,
           degrees: degrees + velocity
         })
       })
@@ -61,12 +62,13 @@ const App = () => {
             x={data[0].x} 
             strength={data[0].strength}
             frequency={50}
+            detectorActive={detectorActive}
           />}
         </FaceDetector>
         <h2>Move your face to spin.</h2>
         <div style={{ display: 'flex' }}>
           <button onClick={toggleDetection}>
-            {detectorActive ? "Stop face detection": "Start face detection"}
+            {detectorActive ? "Stop detection": "Start detection"}
           </button>
           <button onClick={toggleCanvasVisibility}>
             {canvasVisible ? "Hide canvas" : "Show canvas"}
