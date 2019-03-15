@@ -6,7 +6,7 @@
     "babel-loader": "^8.0.5",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-face": "^0.1.5",
+    "react-face": "^0.1.6",
     "react-scripts": "2.1.8"
   },
   "scripts": {

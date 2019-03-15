@@ -42,22 +42,36 @@ const Spinner = ({ x, strength, frequency }) => {
           transition: `transform ${frequency / 1000}s linear`
         }}
       />
-      <h2>Move your face to spin.</h2>
     </div>
   )
 }
 
 const App = () => {
+  const [canvasVisible, setCanvasVisibility] = useState(false)
+  const [detectorActive, setDetectionActive] = useState(true)
+
+  const toggleCanvasVisibility = () => setCanvasVisibility(!canvasVisible)
+  const toggleDetection = () => setDetectionActive(!detectorActive)
+
   return (
     <div className="App">
       <header className="App-header">  
-        <FaceDetector>
+        <FaceDetector showCanvas={canvasVisible} active={detectorActive}>
           {data => <Spinner 
             x={data[0].x} 
             strength={data[0].strength}
             frequency={50}
           />}
         </FaceDetector>
+        <h2>Move your face to spin.</h2>
+        <div style={{ display: 'flex' }}>
+          <button onClick={toggleDetection}>
+            {detectorActive ? "Stop face detection": "Start face detection"}
+          </button>
+          <button onClick={toggleCanvasVisibility}>
+            {canvasVisible ? "Hide canvas" : "Show canvas"}
+          </button>
+        </div>
       </header>
     </div>
   )
